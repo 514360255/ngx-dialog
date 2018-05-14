@@ -8,6 +8,7 @@
 import {Component, ComponentFactoryResolver, ComponentRef, Inject, ViewChild, ViewContainerRef} from '@angular/core';
 import {DialogOptions} from './dialog.service';
 import {DialogBoxComponent} from './dialog-box/dialog-box.component';
+import set = Reflect.set;
 
 @Component({
     selector: 'dialog-holder',
@@ -16,7 +17,6 @@ import {DialogBoxComponent} from './dialog-box/dialog-box.component';
 
 export class DialogHolderComponent {
 
-    public index: number = 0;
     public className: string;
     public dialogs: Array<any> = [];
     @ViewChild('element', {read: ViewContainerRef}) public element: ViewContainerRef;
@@ -24,8 +24,7 @@ export class DialogHolderComponent {
     constructor(
         public componentFactory: ComponentFactoryResolver,
         @Inject('dialog.service') public dialogService: any
-    ) {
-    }
+    ) {}
 
     /**
      * 添加弹窗
@@ -34,12 +33,12 @@ export class DialogHolderComponent {
      * @param options
      */
     addDialog(component: any, data: any, options: DialogOptions) {
-        this.className = options && options.animatedName ? options.animatedName : 'dialog-animation';
+        this.className = data.animatedName ? data.animatedName : 'dialog-animation';
         const componentFactory: any = this.componentFactory.resolveComponentFactory(DialogBoxComponent);
         const componentRef: ComponentRef<any> = this.element.createComponent(componentFactory);
         const dialogBoxComponent: DialogBoxComponent = <DialogBoxComponent>componentRef.instance;
-        dialogBoxComponent.setHeaderData(data.header, data.btnList, this.className, this.index++);
-        const setData: any = {
+        dialogBoxComponent.setHeaderData(data.header, data.btnList, this.className);
+        let setData: any = {
             data: data.data
         };
         if (data.customEvent) {
@@ -48,23 +47,42 @@ export class DialogHolderComponent {
         if (data.confirmOutEmit) {
             setData['confirmOutEmit'] = data.confirmOutEmit;
         }
-        const _component: DialogBoxComponent = dialogBoxComponent.addComponent(component, setData, options);
+        const _component: DialogBoxComponent = dialogBoxComponent.addComponent(component, setData);
         this.dialogs.push(_component);
+
+        if(options && options.timeout) {
+            setTimeout(() => {
+                this.removeDialog(_component);
+            }, options.timeout);
+        }
+
     }
 
     /**
      * 移除dialog
      * @param {DialogBoxComponent} component
      */
-    removeDialog(component: any): void {
-        const _component: HTMLElement = component.wrapper.dialogBoxAnimation.nativeElement;
-        _component.classList.remove(this.className);
-        _component.classList.add(this.className + '-leave');
-        const _index: number = this.dialogs.indexOf(component);
-        setTimeout(() => {
-            this.element.remove(_index);
-            this.dialogs.splice(_index, 1);
-        }, 400);
+    removeDialog(component?: any) {
+        if(component) {
+            const _component: HTMLElement = component.wrapper.dialogBoxAnimation.nativeElement;
+            _component.classList.remove(this.className);
+            _component.classList.add(this.className + '-leave');
+            setTimeout(() => {
+                const _index: number = this.dialogs.indexOf(component);
+                if (_index > -1) {
+                    this.element.remove(_index);
+                    this.dialogs.splice(_index, 1);
+                }
+            }, 400);
+        }else {
+            const _component: HTMLElement = this.dialogs[0].wrapper.dialogBoxAnimation.nativeElement;
+            _component.classList.remove(this.className);
+            _component.classList.add(this.className + '-leave');
+            setTimeout(() => {
+                this.element.remove(0);
+                this.dialogs.splice(0, 1);
+            }, 400);
+        }
     }
 
 }

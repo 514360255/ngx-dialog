@@ -10,17 +10,18 @@ import {
 import {DialogBoxComponent} from './dialog-box/dialog-box.component';
 import {DialogHolderComponent} from './dialog-holder.component';
 import {DialogPromptComponent} from './dialog-prompt/dialog-prompt.component';
+import {PromptComponent} from './prompt/prompt.component';
 
 export interface DialogOptions {
+
+    // 指定弹窗顺序
+    index?: number;
 
     // 自动关闭（单位：ms）默认不会关闭
     timeout?: number;
 
     // 点击背景是否关闭弹窗 false 不关闭
     bgClose?: boolean | false;
-
-    // 动画类名
-    animatedName?: string;
 }
 
 @Injectable()
@@ -33,7 +34,8 @@ export class DialogService {
         public injector: Injector,
         public applicationRef: ApplicationRef,
         public componentFactoryResolver: ComponentFactoryResolver
-    ) {}
+    ) {
+    }
 
     /**
      * 创建 dialog holder
@@ -41,21 +43,21 @@ export class DialogService {
      * @param {any} data
      * @param {DialogOptions} options
      */
-    addDialog(component: DialogHolderComponent, data: any, options: DialogOptions): void {
-
-        if(!options) {
-            options = {};
-            options['bgClose'] = true;
-        }else if(!options.bgClose) {
-            options['bgClose'] = true;
-        }
+    addDialog(component: any, data: any, options: DialogOptions) {
 
         // 判断页面中是否已经插入dialog holder标签
         if (!this.dialogHolderComponent) {
             this.dialogHolderComponent = this.createDialogHolderComponent();
         }
-
-        this.dialogHolderComponent.addDialog(component ? component : DialogPromptComponent, data, options);
+        let _component: any;
+        if(component && (component === 'prompt')) {
+            _component = PromptComponent;
+        }else if(component) {
+            _component = component;
+        }else {
+            _component = DialogPromptComponent;
+        }
+        this.dialogHolderComponent.addDialog(_component, data, options);
     }
 
     /**
@@ -93,11 +95,10 @@ export class DialogService {
     /**
      * 移除dialog
      * @param {DialogBoxComponent} dialog
-     * @param {boolean} isFlag
      */
-    removeDialog(dialog: DialogBoxComponent, isFlag: boolean): void {
+    removeDialog(dialog?: DialogBoxComponent) {
         if (!this.dialogHolderComponent) return;
-        this.dialogHolderComponent.removeDialog(dialog, isFlag);
+        this.dialogHolderComponent.removeDialog(dialog);
     }
 
 }

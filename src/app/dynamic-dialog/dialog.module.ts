@@ -11,6 +11,7 @@ import {DialogService} from './dialog.service';
 import {CommonModule} from '@angular/common';
 import {DialogHolderComponent} from './dialog-holder.component';
 import {DialogPromptComponent} from './dialog-prompt/dialog-prompt.component';
+import {PromptComponent} from './prompt/prompt.component';
 
 @NgModule({
     imports: [
@@ -19,12 +20,14 @@ import {DialogPromptComponent} from './dialog-prompt/dialog-prompt.component';
     declarations: [
         DialogHolderComponent,
         DialogBoxComponent,
-        DialogPromptComponent
+        DialogPromptComponent,
+        PromptComponent
     ],
     entryComponents: [
         DialogHolderComponent,
         DialogBoxComponent,
-        DialogPromptComponent
+        DialogPromptComponent,
+        PromptComponent
     ]
 })
 
