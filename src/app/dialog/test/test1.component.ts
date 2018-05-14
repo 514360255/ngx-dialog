@@ -29,7 +29,7 @@ export class Test1Component {
 
     getSubmitData() {
         this.outputEvent.emit('success!!!');
-        this.dynamicDialog.addDialog(null, {
+        this.dynamicDialog.addDialog('prompt', {
             header: {
                 title: '渠道状态123'
             },
