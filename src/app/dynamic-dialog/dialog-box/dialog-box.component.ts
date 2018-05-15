@@ -8,6 +8,7 @@
 import {
     Component, ComponentFactoryResolver, EventEmitter, HostListener, OnInit, Output, ViewChild, ViewContainerRef,
     ReflectiveInjector, ComponentRef, Inject} from '@angular/core';
+import {DialogOptions} from '../dialog.service';
 
 @Component({
     selector: 'dialog-box',
@@ -17,6 +18,7 @@ import {
 
 export class DialogBoxComponent implements OnInit {
 
+    public closeIndexName: string = '';
     public className: string;
     public customEvent: string;
     public headerData: any = {
@@ -29,6 +31,7 @@ export class DialogBoxComponent implements OnInit {
         {icon: 'fa-check', type: 'blue', name: '确认', status: true}
     ];
     public content: DialogBoxComponent;
+    public options: DialogOptions = {};
 
     @ViewChild('dialogBoxAnimation') public dialogBoxAnimation: any;
     @ViewChild('element', {read: ViewContainerRef}) public element: any;
@@ -37,9 +40,14 @@ export class DialogBoxComponent implements OnInit {
 
     @HostListener('document:click', ['$event.target'])
     onclick(btn: HTMLElement) {
-        const className: string = btn.className;
-        if (className.indexOf('dialog-animation') > -1) {
-            this.dialogButton(false);
+        console.log(this.options);
+        if(this.options.bgClose) {
+            const className: string = btn.className;
+            if ((className.indexOf('dialog-animation') > -1) &&
+                (this.content['wrapper']['closeIndexName'] === btn.getAttribute('index'))) {
+                console.log(this.content);
+                this.dialogService.removeDialog(this.content);
+            }
         }
     }
 
@@ -56,17 +64,17 @@ export class DialogBoxComponent implements OnInit {
      * @param data
      * @param btnList
      * @param className
+     * @param index
      */
-    setHeaderData(data: any, btnList: Array<any>, className: string) {
+    setHeaderData(data: any, btnList: Array<any>, className: string, index: number) {
         for(const key in data) {
             this.headerData[key] = data[key];
         }
         this.className = className;
-        if(JSON.stringify(btnList) === '[]') {
-            this.btnList = [];
-        }else if (btnList) {
+        if (btnList) {
             this.btnList = btnList;
         }
+        this.closeIndexName = 'close-dialog-' + index;
         this.setClassName();
     }
 
@@ -74,9 +82,12 @@ export class DialogBoxComponent implements OnInit {
      * 添加component
      * @param component
      * @param data
+     * @param options
      * @returns {any}
      */
-    addComponent(component: any, data: any): any {
+    addComponent(component: any, data: any, options: DialogOptions): any {
+
+        this.options = options;
 
         this.customEvent = data.customEvent;
 

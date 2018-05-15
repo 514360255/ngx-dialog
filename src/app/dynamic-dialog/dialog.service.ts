@@ -6,7 +6,8 @@
  */
 
 import {
-    ApplicationRef, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Injectable, Injector} from '@angular/core';
+    ApplicationRef, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Injectable, Injector
+} from '@angular/core';
 import {DialogBoxComponent} from './dialog-box/dialog-box.component';
 import {DialogHolderComponent} from './dialog-holder.component';
 import {DialogPromptComponent} from './dialog-prompt/dialog-prompt.component';
@@ -14,14 +15,14 @@ import {PromptComponent} from './prompt/prompt.component';
 
 export interface DialogOptions {
 
-    // 指定弹窗顺序
-    index?: number;
-
     // 自动关闭（单位：ms）默认不会关闭
     timeout?: number;
 
     // 点击背景是否关闭弹窗 false 不关闭
     bgClose?: boolean | false;
+
+    // 动画类名
+    animatedName?: string;
 }
 
 @Injectable()
@@ -43,18 +44,25 @@ export class DialogService {
      * @param {any} data
      * @param {DialogOptions} options
      */
-    addDialog(component: any, data: any, options: DialogOptions) {
+    addDialog(component: any, data: any, options: DialogOptions): void {
+
+        if (!options) {
+            options = {};
+            options['bgClose'] = true;
+        } else if (!options.bgClose) {
+            options['bgClose'] = true;
+        }
 
         // 判断页面中是否已经插入dialog holder标签
         if (!this.dialogHolderComponent) {
             this.dialogHolderComponent = this.createDialogHolderComponent();
         }
         let _component: any;
-        if(component && (component === 'prompt')) {
+        if (component && (component === 'prompt')) {
             _component = PromptComponent;
-        }else if(component) {
+        } else if (component) {
             _component = component;
-        }else {
+        } else {
             _component = DialogPromptComponent;
         }
         this.dialogHolderComponent.addDialog(_component, data, options);

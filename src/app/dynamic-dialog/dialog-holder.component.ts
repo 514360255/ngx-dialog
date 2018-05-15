@@ -8,7 +8,6 @@
 import {Component, ComponentFactoryResolver, ComponentRef, Inject, ViewChild, ViewContainerRef} from '@angular/core';
 import {DialogOptions} from './dialog.service';
 import {DialogBoxComponent} from './dialog-box/dialog-box.component';
-import set = Reflect.set;
 
 @Component({
     selector: 'dialog-holder',
@@ -17,6 +16,7 @@ import set = Reflect.set;
 
 export class DialogHolderComponent {
 
+    public index: number = 0;
     public className: string;
     public dialogs: Array<any> = [];
     @ViewChild('element', {read: ViewContainerRef}) public element: ViewContainerRef;
@@ -24,7 +24,8 @@ export class DialogHolderComponent {
     constructor(
         public componentFactory: ComponentFactoryResolver,
         @Inject('dialog.service') public dialogService: any
-    ) {}
+    ) {
+    }
 
     /**
      * 添加弹窗
@@ -33,12 +34,12 @@ export class DialogHolderComponent {
      * @param options
      */
     addDialog(component: any, data: any, options: DialogOptions) {
-        this.className = data.animatedName ? data.animatedName : 'dialog-animation';
+        this.className = options && options.animatedName ? options.animatedName : 'dialog-animation';
         const componentFactory: any = this.componentFactory.resolveComponentFactory(DialogBoxComponent);
         const componentRef: ComponentRef<any> = this.element.createComponent(componentFactory);
         const dialogBoxComponent: DialogBoxComponent = <DialogBoxComponent>componentRef.instance;
-        dialogBoxComponent.setHeaderData(data.header, data.btnList, this.className);
-        let setData: any = {
+        dialogBoxComponent.setHeaderData(data.header, data.btnList, this.className, this.index++);
+        const setData: any = {
             data: data.data
         };
         if (data.customEvent) {
@@ -47,15 +48,8 @@ export class DialogHolderComponent {
         if (data.confirmOutEmit) {
             setData['confirmOutEmit'] = data.confirmOutEmit;
         }
-        const _component: DialogBoxComponent = dialogBoxComponent.addComponent(component, setData);
+        const _component: DialogBoxComponent = dialogBoxComponent.addComponent(component, setData, options);
         this.dialogs.push(_component);
-
-        if(options && options.timeout) {
-            setTimeout(() => {
-                this.removeDialog(_component);
-            }, options.timeout);
-        }
-
     }
 
     /**
