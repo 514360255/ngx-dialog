@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 
 
 import {AppComponent} from './app.component';
-import {DialogModule} from './dynamic-dialog/dialog.module';
+import {DialogModule} from './dynamic-dialog/index';
 import {Test1Component} from './dialog/test/test1.component';
 import {Test2Component} from './dialog/test2/test2.component';
 

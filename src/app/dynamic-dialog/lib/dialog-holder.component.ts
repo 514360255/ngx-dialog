@@ -7,7 +7,7 @@
 
 import {Component, ComponentFactoryResolver, ComponentRef, Inject, ViewChild, ViewContainerRef} from '@angular/core';
 import {DialogOptions} from './dialog.service';
-import {DialogBoxComponent} from './dialog-box/dialog-box.component';
+import {DialogBoxComponent} from './dialog-box.component';
 
 @Component({
     selector: 'dialog-holder',

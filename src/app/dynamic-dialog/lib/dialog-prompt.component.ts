@@ -7,11 +7,11 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
-    selector: 'prompt',
-    templateUrl: './prompt.component.html'
+    selector: 'dialog-prompt',
+    template: `<p class="font-14 min-h50">{{content}}</p>`
 })
 
-export class PromptComponent {
+export class DialogPromptComponent {
 
     public content: string;
 
@@ -26,8 +26,18 @@ export class PromptComponent {
 
     constructor() {}
 
+    /**
+     * 返回事件
+     */
     confirmFunction() {
         this.outputEvent.emit();
+    }
+
+    /**
+     * 返回事件
+     */
+    outputPromptEmit() {
+        this.outputEvent.emit(true);
     }
 
 }

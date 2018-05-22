@@ -6,12 +6,12 @@
  */
 
 import {ModuleWithProviders, NgModule} from '@angular/core';
-import {DialogBoxComponent} from './dialog-box/dialog-box.component';
+import {DialogBoxComponent} from './dialog-box.component';
 import {DialogService} from './dialog.service';
 import {CommonModule} from '@angular/common';
 import {DialogHolderComponent} from './dialog-holder.component';
-import {DialogPromptComponent} from './dialog-prompt/dialog-prompt.component';
-import {PromptComponent} from './prompt/prompt.component';
+import {DialogPromptComponent} from './dialog-prompt.component';
+import {PromptComponent} from './prompt.component';
 
 @NgModule({
     imports: [

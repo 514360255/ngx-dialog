@@ -8,10 +8,10 @@
 import {
     ApplicationRef, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Injectable, Injector
 } from '@angular/core';
-import {DialogBoxComponent} from './dialog-box/dialog-box.component';
+import {DialogBoxComponent} from './dialog-box.component';
 import {DialogHolderComponent} from './dialog-holder.component';
-import {DialogPromptComponent} from './dialog-prompt/dialog-prompt.component';
-import {PromptComponent} from './prompt/prompt.component';
+import {DialogPromptComponent} from './dialog-prompt.component';
+import {PromptComponent} from './prompt.component';
 
 export interface DialogOptions {
 
