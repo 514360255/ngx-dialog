@@ -19,7 +19,6 @@ export class PromptComponent {
 
     @Input() set setDialogData(data: any) {
         if (data) {
-            console.log(data.data);
             this.content = (data.data && data.data.msg) ? data.data.msg : '操作成功';
         }
     }

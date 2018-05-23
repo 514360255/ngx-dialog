@@ -60,12 +60,10 @@ export class DialogBoxComponent implements OnInit {
 
     @HostListener('document:click', ['$event.target'])
     onclick(btn: HTMLElement) {
-        console.log(this.options);
         if(this.options.bgClose) {
             const className: string = btn.className;
             if ((className.indexOf('dialog-animation') > -1) &&
                 (this.content['wrapper']['closeIndexName'] === btn.getAttribute('index'))) {
-                console.log(this.content);
                 this.dialogService.removeDialog(this.content);
             }
         }
